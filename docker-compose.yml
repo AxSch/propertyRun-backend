@@ -1,0 +1,38 @@
+name: property_run
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NAME: property_run_backend
+    image: property_run_backend
+    command: "python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/backend
+    env_file:
+      - ./.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      DB_PORT: $DB_PORT
+      MYSQL_PASSWORD: $DB_PASSWORD
+      MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+      MYSQL_USER: $DB_USER
+      MYSQL_DATABASE: $DB_NAME
+    volumes:
+        - db:/var/lib/mysql
+    ports:
+      - $DB_PORT:$DB_PORT
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+
+volumes:
+    db:
