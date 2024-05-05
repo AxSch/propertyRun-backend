@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "config.apps.ConfigConfig",
     "corsheaders",
-    "rest_framework"
+    "rest_framework",
     "houses"
 ]
 
